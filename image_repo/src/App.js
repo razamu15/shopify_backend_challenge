@@ -26,19 +26,30 @@ function App() {
   const [files, setFiles] = useState({});
   const [user] = useAuthState(auth);
 
+  function addImage(img, pri) {
+    let recordInsert = firebase.firestore().collection('images').add({
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      uid: auth.currentUser.uid,
+      url: `https://storage.googleapis.com/shopify-image-repo-f092c.appspot.com/${img.name}`,
+      pivacy: pri,
+    });
+    let fileUpload = firebase.storage().ref().child(img.name).put(img);
+    Promise.all([recordInsert, fileUpload]).then(([firestoreRes, bucketRes]) => {
+      console.log(firestoreRes);
+      console.log(bucketRes);
+      console.log('DONEDO');
+    });
+  }
+
   function fileChange(e) {
     setFiles(e.target.files);
   }
 
-  function fileUpload(e) {
+  function formSubmit(e) {
     e.preventDefault();
-    console.log("hehe", files);
-    let storage = firebase.storage().ref();
-    let img_ref = storage.child(files[0].name);
-    img_ref.put(files[0]).then((snapshot) => {
-      console.log(snapshot);
-      console.log('Uploaded a blob or file!');
-    });
+    for (let i = 0; i < files.length; i++) {
+      addImage(files[i], privacy);
+    }
   }
 
   return (
