@@ -27,18 +27,18 @@ function App() {
   const [privacy, setPrivacy] = useState("public")
   const [user] = useAuthState(auth);
 
-  function addImage(img, pri) {
-    let recordInsert = firebase.firestore().collection('images').add({
+  const [view, setView] = useState("public");
+
+  async function addImage(img, pri) {
+    // first upload to bucket then wait to insert into db bcz ow db insert
+    // happens faster and the firestore data subscription updates page with
+    // a non existant cloud bucket object url
+    await firebase.storage().ref().child(img.name).put(img);
+    await firebase.firestore().collection('images').add({
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      uid: auth.currentUser.uid,
+      uid: user.uid,
       url: `https://storage.googleapis.com/shopify-image-repo-f092c.appspot.com/${img.name}`,
-      pivacy: pri,
-    });
-    let fileUpload = firebase.storage().ref().child(img.name).put(img);
-    Promise.all([recordInsert, fileUpload]).then(([firestoreRes, bucketRes]) => {
-      console.log(firestoreRes);
-      console.log(bucketRes);
-      console.log('DONEDO');
+      privacy: pri,
     });
   }
 
