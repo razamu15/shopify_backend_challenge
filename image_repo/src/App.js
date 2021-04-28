@@ -24,6 +24,7 @@ const auth = firebase.auth();
 
 function App() {
   const [files, setFiles] = useState({});
+  const [privacy, setPrivacy] = useState("public")
   const [user] = useAuthState(auth);
 
   function addImage(img, pri) {
@@ -55,15 +56,26 @@ function App() {
   return (
     <div className="App">
       {user ?
-      <div>
-        <form encType="multipart/form-data" onSubmit={fileUpload}>
-          <input onChange={fileChange} name="images" type="file" multiple />
-          <button type="submit">Go!</button>
-        </form>
-        <img style={{width:'200px', height:'200px'}} src="https://storage.googleapis.com/shopify-image-repo-f092c.appspot.com/beach.jpg" />
-        <SignOut />
-      </div>
-      : <SignIn />}
+        <div>
+          <SignOut />
+          <form encType="multipart/form-data" onSubmit={formSubmit}>
+            <input onChange={fileChange} name="images" type="file" multiple />
+            
+            <div onClick={e => {setPrivacy("public")}}>
+              <input type="radio" name="privacy" value="public" checked={privacy === "public" ? "checked" : null} />
+              <label for="public">Public</label>
+            </div>
+            
+            <div onClick={e => setPrivacy("private")}>
+              <input type="radio" name="privacy" value="private" checked={privacy === "private" ? "checked" : null} />
+              <label for="private">Private</label>
+            </div>
+            <button type="submit">Go!</button>
+          </form>
+          <img style={{ width: '200px', height: '200px' }} src="https://storage.googleapis.com/shopify-image-repo-f092c.appspot.com/beach.jpg" />
+          
+        </div>
+        : <SignIn />}
     </div>
   );
 }
