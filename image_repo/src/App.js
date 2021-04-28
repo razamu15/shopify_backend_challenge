@@ -78,19 +78,18 @@ function App() {
           </form>
           <div className="tabs is-toggle is-fullwidth">
             <ul>
-              <li id="private" className="tab" onClick={changeView}>
+              <li id="public" className="tab is-active" onClick={changeView}>
                 <a>
-                  <span className="icon is-small"><i className="fas fa-image" aria-hidden="true"></i></span>
-                  <span>Private Pictures</span>
-                </a>
-              </li>
-              <li id="public" className="tab" onClick={changeView}>
-                <a>
-                  <span className="icon is-small"><i className="fas fa-music" aria-hidden="true"></i></span>
+                  <span className="icon is-small"><i className="fas fa-images" aria-hidden="true"></i></span>
                   <span>Public Pictures</span>
                 </a>
               </li>
-
+              <li id="private" className="tab" onClick={changeView}>
+                <a>
+                  <span className="icon is-small"><i className="fas fa-user-edit" aria-hidden="true"></i></span>
+                  <span>My Pictures</span>
+                </a>
+              </li>
             </ul>
           </div>
           <div id="img-cont">
@@ -140,7 +139,7 @@ function PublicGallery() {
 }
 
 function PrivateGallery() {
-  let [imageDocs, loading, error] = useCollectionData(firebase.firestore().collection("images").where("privacy", "==", "private").where("uid", "==", auth.currentUser.uid));
+  let [imageDocs, loading, error] = useCollectionData(firebase.firestore().collection("images").where("uid", "==", auth.currentUser.uid));
 
   if (error) {
     console.log(error);
@@ -149,7 +148,7 @@ function PrivateGallery() {
 
   return (
     loading ? <p>Loading...</p> :
-    imageDocs.map(img => {
+      imageDocs.map(img => {
         return (
           <img src={img.url} />
         )
