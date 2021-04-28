@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import './App.css';
 
 import firebase from 'firebase/app';
@@ -48,9 +48,13 @@ function App() {
 
   function formSubmit(e) {
     e.preventDefault();
-    for (let i = 0; i < files.length; i++) {
-      addImage(files[i], privacy);
-    }
+    Array.from(files).map(file => addImage(file, privacy));
+  }
+
+  function changeView(e) {
+    setView(e.currentTarget.id);
+    document.querySelectorAll('.tab').forEach(el => el.classList.remove("is-active"));
+    e.currentTarget.classList.add("is-active");
   }
 
   return (
@@ -60,20 +64,39 @@ function App() {
           <SignOut />
           <form encType="multipart/form-data" onSubmit={formSubmit}>
             <input onChange={fileChange} name="images" type="file" multiple />
-            
-            <div onClick={e => {setPrivacy("public")}}>
+
+            <div onClick={e => { setPrivacy("public") }}>
               <input type="radio" name="privacy" value="public" checked={privacy === "public" ? "checked" : null} />
               <label for="public">Public</label>
             </div>
-            
+
             <div onClick={e => setPrivacy("private")}>
               <input type="radio" name="privacy" value="private" checked={privacy === "private" ? "checked" : null} />
               <label for="private">Private</label>
             </div>
             <button type="submit">Go!</button>
           </form>
-          <img style={{ width: '200px', height: '200px' }} src="https://storage.googleapis.com/shopify-image-repo-f092c.appspot.com/beach.jpg" />
-          
+          <div className="tabs is-toggle is-fullwidth">
+            <ul>
+              <li id="private" className="tab" onClick={changeView}>
+                <a>
+                  <span className="icon is-small"><i className="fas fa-image" aria-hidden="true"></i></span>
+                  <span>Private Pictures</span>
+                </a>
+              </li>
+              <li id="public" className="tab" onClick={changeView}>
+                <a>
+                  <span className="icon is-small"><i className="fas fa-music" aria-hidden="true"></i></span>
+                  <span>Public Pictures</span>
+                </a>
+              </li>
+
+            </ul>
+          </div>
+          <div id="img-cont">
+            {view === "public" ? <PublicGallery /> : <PrivateGallery />}
+          </div>
+
         </div>
         : <SignIn />}
     </div>
@@ -81,7 +104,6 @@ function App() {
 }
 
 function SignIn() {
-
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider);
@@ -102,5 +124,36 @@ function SignOut() {
   )
 }
 
+function PublicGallery() {
+  let [imageDocs, loading, error] = useCollectionData(firebase.firestore().collection("images").where("privacy", "==", "public").orderBy('createdAt'));
 
+  if (error) return <p>Error</p>;
+
+  return (
+    loading ? <p>Loading...</p> :
+      imageDocs.map(img => {
+        return (
+          <img src={img.url} />
+        )
+      })
+  )
+}
+
+function PrivateGallery() {
+  let [imageDocs, loading, error] = useCollectionData(firebase.firestore().collection("images").where("privacy", "==", "private").where("uid", "==", auth.currentUser.uid));
+
+  if (error) {
+    console.log(error);
+    return <p>Error</p>;
+  }
+
+  return (
+    loading ? <p>Loading...</p> :
+    imageDocs.map(img => {
+        return (
+          <img src={img.url} />
+        )
+      })
+  )
+}
 export default App;
