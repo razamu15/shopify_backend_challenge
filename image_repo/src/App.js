@@ -120,7 +120,20 @@ function App() {
           </div>
 
         </div>
-        : <p>sign in with a google account to begin</p>}
+        :
+        <div class="content" style={{margin: '20px'}}>
+          <h1>Hi!</h1>
+          <p>This is the shopify fall 2021 developer intern challende.</p>
+          <h2>App Overview</h2>
+          <p>This is a JAM Stack app made with React as a front end using serverless firebase cloud functions for some processing tasks.
+          <a href="https://github.com/razamu15/shopify_backend_challenge">Link to Github Repo</a><br />
+          It uses Google OAuth through firestore and the images are uploaded to google cloud storage bucket, records of uploaded images
+          are stored in cloud firestore.</p>
+          <p><strong>Note:</strong> When an image is uploaded, the cloud function is automatically
+          triggered in firebase and it uses google cloud vision api to get the entities in that image and updates the corresponding record
+          in firestore to facilitate search</p>
+        </div>
+      }
     </div>
   );
 }
@@ -194,11 +207,11 @@ function SearchGallery() {
         <div className="field">
           <label className="label">Image Search</label>
           <div className="control">
-            <input className="input" type="text" name="search-key" value={search} onChange={e => setSearch(e.target.value)} placeholder="eg. House, Mountain" />
+            <input className="input" type="text" name="search-key" value={search} onChange={e => setSearch(e.target.value)} placeholder="eg. lake, sky" />
           </div>
-          <p class="help">Search for images with keywords</p>
+          <p class="help">enter keywords</p>
         </div>
-        
+
       </form>
       <SearchGalleryWrapper keywords={search.toLowerCase().split(" ")} />
     </>
