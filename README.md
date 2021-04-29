@@ -1,7 +1,7 @@
 # shopify_backend_challenge
 
 <h1>Hi!</h1>
-          <p>This is the shopify fall 2021 developer intern challende.</p>
+          <p>This is the shopify fall 2021 developer intern challende.<br>Deployed HERE: "https://projectstonks.me" </p> 
           <h2>App Overview</h2>
           <p>This is a JAM Stack app made with React as a front end using serverless firebase cloud functions for some processing tasks.
           <a href="https://github.com/razamu15/shopify_backend_challenge">Link to Github Repo</a><br />
@@ -15,7 +15,7 @@
 
 
 functions refs:
-https://github.com/firebase/functions-samples/blob/master/vision-annotate-images/functions/src/index.ts
-https://gist.github.com/joaobiriba/aa1b0d20ce1d3cfa614fb8f2e9275067
-https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/functions/imagemagick/index.js
+https://github.com/firebase/functions-samples/blob/master/vision-annotate-images/functions/src/index.ts <br>
+https://gist.github.com/joaobiriba/aa1b0d20ce1d3cfa614fb8f2e9275067<br>
+https://github.com/GoogleCloudPlatform/nodejs-docs-samples/blob/master/functions/imagemagick/index.js<br>
 https://cloud.google.com/functions/docs/tutorials/imagemagick
