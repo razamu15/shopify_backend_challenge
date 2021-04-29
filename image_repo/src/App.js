@@ -68,7 +68,7 @@ function App() {
         <div>
 
           <form id="file-upload" encType="multipart/form-data" onSubmit={formSubmit}>
-          <div className="file has-name is-boxed">
+            <div className="file has-name is-boxed">
               <label className="file-label">
                 <input className="file-input" onChange={fileChange} name="images" type="file" multiple />
                 <span className="file-cta">
