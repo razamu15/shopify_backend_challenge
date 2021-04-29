@@ -35,7 +35,7 @@ exports.annotateImage = functions.storage.object().onFinalize(async event => {
     let result = await client.annotateImage(request);
 
     // this is available becasuse firestore insert happens before bucket upload
-    let fileRecord = await db.doc(`images/${filePath}`).update({keywords: result[0].labelAnnotations.map(ann => ann.description)});
+    let fileRecord = await db.doc(`images/${filePath}`).update({keywords: result[0].labelAnnotations.map(ann => ann.description.toLowerCase())});
 });
 
 exports.deleteUploadedFile = functions.firestore
