@@ -52,6 +52,7 @@ function App() {
   function formSubmit(e) {
     e.preventDefault();
     Array.from(files).map(file => addImage(file, privacy));
+    setFiles({});
   }
 
   function changeView(e) {
@@ -62,23 +63,36 @@ function App() {
 
   return (
     <div className="App">
+      <Navbar />
       {user ?
         <div>
-          <SignOut />
-          <form encType="multipart/form-data" onSubmit={formSubmit}>
-            <input onChange={fileChange} name="images" type="file" multiple />
 
-            <div onClick={e => { setPrivacy("public") }}>
-              <input type="radio" name="privacy" value="public" checked={privacy === "public" ? "checked" : null} />
-              <label for="public">Public</label>
+          <form id="file-upload" encType="multipart/form-data" onSubmit={formSubmit}>
+          <div className="file has-name is-boxed">
+              <label className="file-label">
+                <input className="file-input" onChange={fileChange} name="images" type="file" multiple />
+                <span className="file-cta">
+                  <span className="file-icon">
+                    <i className="fas fa-upload"></i>
+                  </span>
+                  <span className="file-label">Select File(s)…</span>
+                </span>
+                <span className="file-name">{files.length || 0} files selected</span>
+              </label>
             </div>
 
-            <div onClick={e => setPrivacy("private")}>
-              <input type="radio" name="privacy" value="private" checked={privacy === "private" ? "checked" : null} />
-              <label for="private">Private</label>
+            <div className="control">
+              <label className="radio" onClick={e => { setPrivacy("public") }}>
+                <input type="radio" name="privacy" value="public" checked={privacy === "public" ? "checked" : null} />Public</label>
+              <label className="radio" onClick={e => { setPrivacy("private") }}>
+                <input type="radio" name="privacy" value="private" checked={privacy === "private" ? "checked" : null} />Private</label>
             </div>
-            <button type="submit">Go!</button>
+
+            <div className="control">
+              <button className="button is-primary">Upload Images</button>
+            </div>
           </form>
+
           <div className="tabs is-toggle is-fullwidth">
             <ul>
               <li id="public" className="tab is-active" onClick={changeView}>
@@ -100,30 +114,45 @@ function App() {
           </div>
 
         </div>
-        : <SignIn />}
+        : <p>sign in with a google account to begin</p>}
     </div>
   );
 }
 
-function SignIn() {
+
+function Navbar() {
+  const [user] = useAuthState(auth);
+
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider);
   }
 
   return (
-    <>
-      <button className="sign-in" onClick={signInWithGoogle}>Sign in with Google</button>
-      <p>Do not violate the community guidelines or you will be banned for life!</p>
-    </>
-  )
+    <nav className="navbar is-transparent" role="navigation" aria-label="main navigation">
+      <div className="navbar-brand">
+        <p className="navbar-item">
+          <strong>Shopify&nbsp;</strong> Image Repository
+        </p>
+      </div>
 
-}
-
-function SignOut() {
-  return auth.currentUser && (
-    <button className="sign-out" onClick={() => auth.signOut()}>Sign Out</button>
-  )
+      <div id="navbarBasicExample" className="navbar-menu">
+        <div className="navbar-end">
+          <div className="navbar-item">
+            {user ? (
+              <div className="buttons">
+                <a className="button is-primary" onClick={() => auth.signOut()}><strong>Sign Out</strong></a>
+              </div>
+            ) : (
+              <div className="buttons">
+                <button className="button is-primary" onClick={signInWithGoogle}><strong>Sign In</strong></button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
 }
 
 function PublicGallery() {
