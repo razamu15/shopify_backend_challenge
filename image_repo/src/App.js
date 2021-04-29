@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { nanoid } from 'nanoid'
 import './App.css';
 
 import firebase from 'firebase/app';
@@ -33,11 +34,13 @@ function App() {
     // first upload to bucket then wait to insert into db bcz ow db insert
     // happens faster and the firestore data subscription updates page with
     // a non existant cloud bucket object url
-    await firebase.storage().ref().child(img.name).put(img);
-    await firebase.firestore().collection('images').add({
+    let docID = nanoid();
+    await firebase.storage().ref().child(docID).put(img);
+    await firebase.firestore().collection('images').doc(docID).set({
+      id: docID,
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       uid: user.uid,
-      url: `https://storage.googleapis.com/shopify-image-repo-f092c.appspot.com/${img.name}`,
+      url: `https://storage.googleapis.com/shopify-image-repo-f092c.appspot.com/${docID}`,
       privacy: pri,
     });
   }
@@ -132,7 +135,9 @@ function PublicGallery() {
     loading ? <p>Loading...</p> :
       imageDocs.map(img => {
         return (
-          <img src={img.url} />
+          <div key={img.id}>
+            <img src={img.url} />
+          </div>
         )
       })
   )
@@ -140,6 +145,10 @@ function PublicGallery() {
 
 function PrivateGallery() {
   let [imageDocs, loading, error] = useCollectionData(firebase.firestore().collection("images").where("uid", "==", auth.currentUser.uid));
+
+  function delImage(e) {
+    firebase.firestore().collection("images").doc(e.currentTarget.getAttribute("data-imgid")).delete();
+  }
 
   if (error) {
     console.log(error);
@@ -150,7 +159,10 @@ function PrivateGallery() {
     loading ? <p>Loading...</p> :
       imageDocs.map(img => {
         return (
-          <img src={img.url} />
+          <div key={img.id} className="item-cont">
+            <img src={img.url} />
+            <button className="del-btn" data-imgid={img.id} onClick={delImage}><span className="icon is-small"><i className="fas fa-trash-alt" aria-hidden="true"></i></span></button>
+          </div>
         )
       })
   )
