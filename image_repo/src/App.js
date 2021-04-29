@@ -107,10 +107,16 @@ function App() {
                   <span>My Pictures</span>
                 </a>
               </li>
+              <li id="search" className="tab" onClick={changeView}>
+                <a>
+                  <span className="icon is-small"><i className="fas fa-user-edit" aria-hidden="true"></i></span>
+                  <span>Search</span>
+                </a>
+              </li>
             </ul>
           </div>
           <div id="img-cont">
-            {view === "public" ? <PublicGallery /> : <PrivateGallery />}
+            {view === "public" ? <PublicGallery /> : (view === "private" ? <PrivateGallery /> : <SearchGallery />)}
           </div>
 
         </div>
@@ -159,16 +165,9 @@ function PublicGallery() {
   let [imageDocs, loading, error] = useCollectionData(firebase.firestore().collection("images").where("privacy", "==", "public").orderBy('createdAt'));
 
   if (error) return <p>Error</p>;
-
   return (
     loading ? <p>Loading...</p> :
-      imageDocs.map(img => {
-        return (
-          <div key={img.id}>
-            <img src={img.url} />
-          </div>
-        )
-      })
+      <Gallery images={imageDocs} />
   )
 }
 
@@ -179,21 +178,54 @@ function PrivateGallery() {
     firebase.firestore().collection("images").doc(e.currentTarget.getAttribute("data-imgid")).delete();
   }
 
-  if (error) {
-    console.log(error);
-    return <p>Error</p>;
-  }
-
+  if (error) return <p>Error</p>;
   return (
     loading ? <p>Loading...</p> :
-      imageDocs.map(img => {
-        return (
-          <div key={img.id} className="item-cont">
-            <img src={img.url} />
-            <button className="del-btn" data-imgid={img.id} onClick={delImage}><span className="icon is-small"><i className="fas fa-trash-alt" aria-hidden="true"></i></span></button>
-          </div>
-        )
-      })
+      <Gallery images={imageDocs} delete={delImage} />
   )
 }
+
+function SearchGallery() {
+  const [search, setSearch] = useState("");
+
+  return (
+    <>
+      <form id="search-bar">
+        <div className="field">
+          <label className="label">Image Search</label>
+          <div className="control">
+            <input className="input" type="text" name="search-key" value={search} onChange={e => setSearch(e.target.value)} placeholder="eg. House, Mountain" />
+          </div>
+          <p class="help">Search for images with keywords</p>
+        </div>
+        
+      </form>
+      <SearchGalleryWrapper keywords={search.toLowerCase().split(" ")} />
+    </>
+  )
+}
+
+function SearchGalleryWrapper(props) {
+  let [imageDocs, loading, error] = useCollectionData(firebase.firestore().collection("images").where('keywords', 'array-contains-any', props.keywords));
+  if (error) return <p>Error</p>;
+  return (
+    loading ? <p>Loading...</p> :
+      <Gallery images={imageDocs} />
+  )
+}
+
+function Gallery(props) {
+  return (
+    props.images.map(img => {
+      return (
+        <div key={img.id} className="item-cont">
+          <img src={img.url} />
+          {props.delete ? <button className="del-btn" data-imgid={img.id} onClick={props.delete}><span className="icon is-small"><i className="fas fa-trash-alt" aria-hidden="true"></i></span></button> :
+            <></>}
+        </div>
+      )
+    })
+  )
+}
+
 export default App;
