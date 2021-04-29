@@ -17,7 +17,7 @@ const client = new vision.ImageAnnotatorClient();
 //   response.send("Hello from Firebase!");
 // });
 exports.annotateImage = functions.storage.object().onFinalize(async event => {
-    const object = event.data;
+    const object = event;
     const fileBucket = object.bucket;
     const filePath = object.name;
     const gcsPath = `gs://${fileBucket}/${filePath}`;
@@ -35,7 +35,7 @@ exports.annotateImage = functions.storage.object().onFinalize(async event => {
     let result = await client.annotateImage(request);
 
     // this is available becasuse firestore insert happens before bucket upload
-    let fileRecord = await db.doc(`images/${filePath}`).update(result);
+    let fileRecord = await db.doc(`images/${filePath}`).update({keywords: result[0].labelAnnotations.map(ann => ann.description)});
 });
 
 exports.deleteUploadedFile = functions.firestore
@@ -43,5 +43,15 @@ exports.deleteUploadedFile = functions.firestore
     .onDelete((snap, context) => {
         // delete this
         let filePath = `gs://shopify-image-repo-f092c.appspot.com/${context.params.imageID}`
-        console.log("deleting ", filePath);
+        // Create a reference to the file to delete
+        let delFle = storage.bucket('shopify-image-repo-f092c.appspot.com')
+            .file(`${context.params.imageID}`)
+            .delete().then(() => {
+                // File deleted successfully
+                console.log("DELETED ", filePath);
+            }).catch((error) => {
+                // Uh-oh, an error occurred!
+                console.log("paramteters ", context.params);
+                console.log(error);
+            });
     });
