@@ -14,6 +14,7 @@ Deployed here: https://projectstonks.me
 <h2>Instructions</h2>
         <h3>PLEASE NOTE:</h3> the app can handle bulk upload of images but I am using a live billing account for firebase and google cloud 
             <strong>so do not upload more than a maximum of 50 images please.</strong>
+            <br>
         <ol>
             <li> sign in with a google account. this is only used to differentiate between which users uploaded which images and nothing else. 
             If you dont wanna use your own use the following:
