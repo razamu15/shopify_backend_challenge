@@ -12,11 +12,12 @@ Deployed here: https://projectstonks.me
           in firestore to facilitate search</p>
 
 <h2>Instructions</h2>
+        <h3>PLEASE NOTE:</h3> the app can handle bulk upload of images but I am using a live billing account for firebase and google cloud 
+            <strong>so do not upload more than a maximum of 50 images please.</strong>
         <ol>
             <li> sign in with a google account. this is only used to differentiate between which users uploaded which images and nothing else. 
             If you dont wanna use your own use the following:
                 <ul><li>email: fakernamemanz@gmail.com</li><li>password: pokemonindigo</li></ul>
             <li> you will see a form to upload images and 3 tabs to switch between public images, private images and a search tab.
-            <h3>PLEASE NOTE:</h3> the app can handle bulk upload of images but I am using a live firebase and google cloud account 
-            <strong>so do not upload more than a maximum of 50 images please.</strong>
+            
 
