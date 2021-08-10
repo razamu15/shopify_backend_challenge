@@ -12,13 +12,6 @@ import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 firebase.initializeApp({
   // your config
-  apiKey: "AIzaSyDp7TOhkq1e3DWlVFIeuFWsAZoCeGxiris",
-  authDomain: "shopify-image-repo-f092c.firebaseapp.com",
-  projectId: "shopify-image-repo-f092c",
-  storageBucket: "shopify-image-repo-f092c.appspot.com",
-  messagingSenderId: "446892391803",
-  appId: "1:446892391803:web:a607144cef9038163a91de",
-  measurementId: "G-TE5H6F92C2"
 })
 
 const auth = firebase.auth();
