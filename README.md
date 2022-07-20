@@ -1,5 +1,5 @@
-# shopify_backend_challenge
-This is the shopify fall 2021 developer intern challende.<br>
+# backend_challenge
+<!-- This is the shopify fall 2021 developer intern challende.<br> -->
 Deployed here: https://projectstonks.me
 
 <h2>App Overview</h2>
